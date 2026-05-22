@@ -121,57 +121,11 @@ public class Main {
     }
     
     public static void main(String[] args) {
-        // Generate test data file
-        String testFilename = "test_temps.csv";
-        String[] testData = {
-            "09:15:30,23.5",
-            "09:16:00,24.1",
-            "09:16:30,22.8",
-            "09:17:00,25.3",
-            "09:17:30,23.9",
-            "09:18:00,24.7",
-            "09:18:30,22.4",
-            "09:19:00,26.1",
-            "09:19:30,23.2",
-            "09:20:00,25.0"
-        };
-        
-        try (PrintWriter writer = new PrintWriter(new FileWriter(testFilename))) {
-            for (String line : testData) {
-                writer.println(line);
-            }
-        } catch (IOException e) {
-            System.out.println("Error creating test file: " + e.getMessage());
+        if (args.length == 0) {
+            System.out.println("Usage: java temperature.Main <filename>");
             return;
         }
         
-        System.out.println("Created test file: " + testFilename);
-        
-        // Process the test file
-        processBatch(testFilename);
-        
-        // Verify the summary file was created
-        String summaryFile = testFilename + "_summary.txt";
-        Path summaryPath = Paths.get(summaryFile);
-        if (Files.exists(summaryPath)) {
-            System.out.println("\nSummary file created: " + summaryFile);
-            try {
-                String content = Files.readString(summaryPath);
-                assert content.contains("Total readings: 10") : "Total readings assertion failed";
-                assert content.contains("Valid readings: 10") : "Valid readings assertion failed";
-                assert content.contains("Errors: 0") : "Errors assertion failed";
-                System.out.println("✓ Summary file contents verified");
-            } catch (IOException e) {
-                System.out.println("Error reading summary file: " + e.getMessage());
-            }
-        }
-        
-        // Clean up test files
-        try {
-            Files.deleteIfExists(Paths.get(testFilename));
-            Files.deleteIfExists(summaryPath);
-        } catch (IOException e) {
-            System.out.println("Error cleaning up files: " + e.getMessage());
-        }
+        processBatch(args[0]);
     }
 }
